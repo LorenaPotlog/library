@@ -21,4 +21,17 @@ public class Carte extends Articol implements Comparable<Carte> {
     public int compareTo(Carte o) {
         return Integer.compare(this.getAnPublicare(), o.getAnPublicare());
     }
+
+    @Override
+    public String toString() {
+        return "Carte{" +
+                "id=" + getId() +
+                ", titlu='" + getTitlu() + '\'' +
+                ", autor='" + getAutor() + '\'' +
+                ", anPublicare=" + getAnPublicare() +
+                ", esteDisponibilaPentruImprumut=" + getEsteDisponibilaPentruImprumut() +
+                ", idSectiune=" + getIdSectiune() +
+                ", volum=" + volum +
+                '}';
+    }
 }

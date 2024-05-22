@@ -1,80 +1,153 @@
 package myLibrary.services;
 
+import myLibrary.models.AudioBook;
+import myLibrary.models.Carte;
 import myLibrary.models.Imprumut;
 import myLibrary.repositories.CarteDAO;
 import myLibrary.repositories.AudioBookDAO;
 import myLibrary.repositories.ImprumutDAO;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+
+import static myLibrary.services.Logare.logare;
 
 
 public class Biblioteca {
     private ImprumutDAO imprumutDao;
     private AudioBookDAO audioBookDao;
-    private CarteDAO    carteDAO;
+    private CarteDAO carteDao;
+    private static final Set<Integer> validSectionIds = new HashSet<>(Set.of(1, 2, 3, 4));
+
 
     public Biblioteca() {
         this.imprumutDao = new ImprumutDAO();
         this.audioBookDao = new AudioBookDAO();
-        this.carteDAO = new CarteDAO();
+        this.carteDao = new CarteDAO();
     }
 
-    public void adaugaCarte(){
+    public void adaugaCarte(String titlu, String autor, int an, int idSectiune, int volum) {
+        logare("adaugaCarte");
+        if (!isValidSectionId(idSectiune)) {
+            throw new IllegalArgumentException("Invalid section ID. Valid IDs are: 1, 2, 3, 4.");
+        }
+        carteDao.adauga(titlu, autor, an, idSectiune, volum);
     }
 
-    public void afiseazaCarte(){
-
+    public Carte afiseazaCarte(int id) {
+        logare("afiseazaCarte");
+        if( carteDao.afiseaza(id) == null){
+            System.out.println("Nu exista cartea cu id-ul: " + id);
+        }
+        return carteDao.afiseaza(id);
     }
 
-    public void modificaCarte(){
-
+    public SortedSet<Carte> afiseazaToateCartile() {
+        logare("afiseazaToateCartile");
+        return carteDao.afiseazaToate();
     }
 
-    public void stergeCarte(){
-
+    public void modificaCarte(int id, String titlu, String autor) {
+        logare("modificaCarte");
+        if (titlu != null && !titlu.isEmpty()) {
+            carteDao.actualizeazaTitlu(id, titlu);
+        }
+        if (autor != null && !autor.isEmpty()) {
+            carteDao.actualizeazaAutor(id, autor);
+        }
     }
+
+    public void stergeCarte(int id) {
+        logare("stergeCarte");
+        carteDao.sterge(id);
+    }
+
     public void imprumutaCarte(int idCarte, int idCititor, int durataImprumutZile) {
+        logare("imprumutaCarte");
+
+        Carte carte = carteDao.afiseaza(idCarte);
+        if (carte == null) {
+            throw new IllegalArgumentException("Cartea cu id-ul " + idCarte + " nu există.");
+        }
+
+        if (!carte.getEsteDisponibilaPentruImprumut()) {
+            throw new IllegalStateException("Cartea cu id-ul " + idCarte + " nu este disponibil pentru împrumut.");
+        }
+
         String numeleTabelei = "ImprumutCarte";
         LocalDate dataImprumut = LocalDate.now();
-        imprumutDao.adaugaImprumut(idCarte, idCititor, dataImprumut, durataImprumutZile,numeleTabelei);
-        audioBookDao.actualizeazaDisponibilitatea(idCarte, false);
+        imprumutDao.adauga(idCarte, idCititor, dataImprumut, durataImprumutZile, numeleTabelei);
+        carteDao.actualizeazaDisponibilitatea(idCarte, false);
     }
 
     public void returneazaCarte(int idImprumut) {
-            Imprumut imprumut = imprumutDao.getImprumut(idImprumut, "ImprumutCarte");
-            int idCarte = imprumut.getIdArticol();
-            carteDAO.actualizeazaDisponibilitatea(idCarte, true);
+        logare("returneazaCarte");
+        Imprumut imprumut = imprumutDao.afiseaza(idImprumut, "ImprumutCarte");
+        int idCarte = imprumut.getIdArticol();
+        carteDao.actualizeazaDisponibilitatea(idCarte, true);
         }
 
 //    AudioBook
 
 
-    public void adaugaAudioBook(){
-
+    public void adaugaAudioBook(String titlu, String autor, int an, int idSectiune, int durata) {
+        logare("adaugaAudioBook");
+        if (!isValidSectionId(idSectiune)) {
+            throw new IllegalArgumentException("Invalid section ID. Valid IDs are: 1, 2, 3, 4.");
+        }
+        audioBookDao.adauga(titlu, autor, an, idSectiune, durata);
     }
 
-    public void afiseazaAudioBook(){
-
+    public AudioBook afiseazaAudioBook(int id) {
+        logare("afiseazaAudioBook");
+        return audioBookDao.afiseaza(id);
     }
 
-    public void modificaAudioBook(){
-
+    public List<AudioBook> afiseazaToateAudioBooks() {
+        logare("afiseazaToateAudioBooks");
+        return audioBookDao.afiseazaToate();
     }
 
-    public void stergeAudioBook(){
+    public void stergeAudioBook(int id) {
+        logare("stergeAudioBook");
+        audioBookDao.sterge(id);
     }
 
     public void imprumutaAudioBook(int idAudioBook, int idCititor, int durataImprumutZile) {
+        logare("imprumutaAudioBook");
+
+        AudioBook audioBook = audioBookDao.afiseaza(idAudioBook);
+        if (audioBook == null) {
+            System.out.println("Audiobook-ul cu id-ul " + idAudioBook + " nu există.");
+        }
+
+        if (!audioBook.getEsteDisponibilaPentruImprumut()) {
+            System.out.println("Audiobook-ul cu id-ul " + idAudioBook + " nu este disponibil pentru împrumut.");
+        }
+
         String numeleTabelei = "ImprumutAudioBook";
         LocalDate dataImprumut = LocalDate.now();
-        imprumutDao.adaugaImprumut(idAudioBook, idCititor, dataImprumut, durataImprumutZile,numeleTabelei);
+        imprumutDao.adauga(idAudioBook, idCititor, dataImprumut, durataImprumutZile, numeleTabelei);
         audioBookDao.actualizeazaDisponibilitatea(idAudioBook, false);
     }
 
     public void returneazaAudioBook(int idImprumut) {
-        Imprumut imprumut = imprumutDao.getImprumut(idImprumut, "ImprumutAudioBook");
+        logare("returneazaAudioBook");
+        Imprumut imprumut = imprumutDao.afiseaza(idImprumut, "ImprumutAudioBook");
         int idAudioBook = imprumut.getIdArticol();
 
         audioBookDao.actualizeazaDisponibilitatea(idAudioBook, true);
+    }
+
+    private boolean isValidSectionId(int idSectiune) {
+        return validSectionIds.contains(idSectiune);
+    }
+
+    public List<Imprumut> afiseazaImprumuturiCarti() {
+        logare("afiseazaImprumuturiCarti");
+        return imprumutDao.afiseazaToate("ImprumutCarte");
     }
 }

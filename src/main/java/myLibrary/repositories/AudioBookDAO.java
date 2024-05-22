@@ -7,11 +7,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioBookDAO {
 
     public void adauga(String titlu, String autor, int an, int idSectiune, int durata) {
-        String sql = "INSERT INTO AudioBook (titlu, autor, an, idSectiune, durata) VALUES ( ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO AudioBook (titlu, autor, an, idSectiune, durata,esteDisponibilaPentruImprumut) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexiune.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, titlu);
@@ -19,6 +21,7 @@ public class AudioBookDAO {
             stmt.setInt(3, an);
             stmt.setInt(4, idSectiune);
             stmt.setInt(5, durata);
+            stmt.setBoolean(6, true);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Eroare la adaugare", e);
@@ -50,6 +53,21 @@ public class AudioBookDAO {
             throw new RuntimeException("Eroare la afisare pentru" + id, e);
         }
         return null;
+    }
+
+    public List<AudioBook> afiseazaToate() {
+        String sql = "SELECT * FROM AudioBook";
+        List<AudioBook> audioBooks = new ArrayList<>();
+        try (Connection conn = Conexiune.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                audioBooks.add(mapper(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Eroare la afisarea tuturor audio book-urilor", e);
+        }
+        return audioBooks;
     }
 
     private AudioBook mapper(ResultSet rs) throws SQLException {

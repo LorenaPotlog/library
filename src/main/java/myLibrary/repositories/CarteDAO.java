@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public class CarteDAO {
 
     public void adauga(String titlu, String autor, int an, int idSectiune, int volum) {
-        String sql = "INSERT INTO Carte (titlu, autor, an, idSectiune, volum) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Carte (titlu, autor, an, idSectiune, volum,esteDisponibilaPentruImprumut) VALUES (?, ?, ?, ?, ?,?)";
         try (Connection conn = Conexiune.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, titlu);
@@ -21,6 +21,7 @@ public class CarteDAO {
             stmt.setInt(3, an);
             stmt.setInt(4, idSectiune);
             stmt.setInt(5, volum);
+            stmt.setBoolean(6, true);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Eroare la adaugare", e);
@@ -44,6 +45,18 @@ public class CarteDAO {
         try (Connection conn = Conexiune.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, titlu);
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Eroare la actualizare", e);
+        }
+    }
+
+    public void actualizeazaDisponibilitatea(int id, boolean disponibil) {
+        String sql = "UPDATE Carte SET esteDisponibilaPentruImprumut = ? WHERE id = ?";
+        try (Connection conn = Conexiune.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, disponibil);
             stmt.setInt(2, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -109,18 +122,6 @@ public class CarteDAO {
                 rs.getInt("idSectiune"),
                 rs.getInt("volum")
         );
-    }
-
-    public void actualizeazaDisponibilitatea(int idCarte, boolean disponibil) {
-        String sql = "UPDATE Carte SET esteDisponibilaPentruImprumut = ? WHERE id = ?";
-        try (Connection conn = Conexiune.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setBoolean(1, disponibil);
-            stmt.setInt(2, idCarte);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Eroare la actualizare", e);
-        }
     }
 
 

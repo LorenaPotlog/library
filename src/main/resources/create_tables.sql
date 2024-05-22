@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS Carte (
     FOREIGN KEY (idSectiune) REFERENCES Sectiune(id)
     );
 
+INSERT INTO Carte (titlu, autor, an, esteDisponibilaPentruImprumut, idSectiune, volum)
+VALUES ('Book Title', 'Author Name', 2024, true, 1, 1);
+
 CREATE TABLE IF NOT EXISTS AudioBook (
                                          id INT AUTO_INCREMENT PRIMARY KEY,
                                          titlu VARCHAR(255) NOT NULL,
@@ -36,11 +39,21 @@ CREATE TABLE IF NOT EXISTS Cititor (
     prenume VARCHAR(255) NOT NULL
     );
 
+INSERT INTO Cititor (nume, prenume) VALUES ('Popescu', 'Ion');
+INSERT INTO Cititor (nume, prenume) VALUES ('Ionescu', 'Maria');
+INSERT INTO Cititor (nume, prenume) VALUES ('Georgescu', 'Alexandru');
+INSERT INTO Cititor (nume, prenume) VALUES ('Dumitrescu', 'Elena');
+
 CREATE TABLE IF NOT EXISTS Bibliotecar (
                                            id INT AUTO_INCREMENT PRIMARY KEY,
                                            nume VARCHAR(255) NOT NULL,
     prenume VARCHAR(255) NOT NULL
     );
+
+INSERT INTO Bibliotecar (nume, prenume) VALUES ('Bibliotecar1', '1');
+INSERT INTO Bibliotecar (nume, prenume) VALUES ('Bibliotecar2', '2');
+INSERT INTO Bibliotecar (nume, prenume) VALUES ('Bibliotecar3', '3');
+INSERT INTO Bibliotecar (nume, prenume) VALUES ('Bibliotecar4', '4');
 
 CREATE TABLE IF NOT EXISTS BibliotecarSectiune (
                                                    bibliotecar_id INT,
@@ -52,20 +65,20 @@ CREATE TABLE IF NOT EXISTS BibliotecarSectiune (
 
 CREATE TABLE IF NOT EXISTS ImprumutCarte (
                                              id INT AUTO_INCREMENT PRIMARY KEY,
-                                             idCarte INT,
+                                             idArticol INT,
                                              idCititor INT,
                                              dataImprumut DATE,
                                              durataImprumutZile INT,
-                                             FOREIGN KEY (idCarte) REFERENCES Carte(id),
+                                             FOREIGN KEY (idArticol) REFERENCES Carte(id),
     FOREIGN KEY (idCititor) REFERENCES Cititor(id)
     );
 
 CREATE TABLE IF NOT EXISTS ImprumutAudioBook (
                                                  id INT AUTO_INCREMENT PRIMARY KEY,
-                                                 idAudioBook INT,
+                                                 idArticol INT,
                                                  idCititor INT,
                                                  dataImprumut DATE,
                                                  durataImprumutZile INT,
-                                                 FOREIGN KEY (idAudioBook) REFERENCES AudioBook(id),
+                                                 FOREIGN KEY (idArticol) REFERENCES AudioBook(id),
     FOREIGN KEY (idCititor) REFERENCES Cititor(id)
     );

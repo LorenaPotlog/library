@@ -9,6 +9,12 @@ public class Articol {
     private int idSectiune;
 
     public Articol(int id, String titlu, String autor, int an, boolean esteDisponibilaPentruImprumut, int idSectiune) {
+        this.id = id;
+        this.titlu = titlu;
+        this.autor = autor;
+        this.anPublicare = an;
+        this.esteDisponibilaPentruImprumut = esteDisponibilaPentruImprumut;
+        this.idSectiune = idSectiune;
     }
 
     public int getId() {
@@ -57,5 +63,17 @@ public class Articol {
 
     public void setIdSectiune(int idSectiune) {
         this.idSectiune = idSectiune;
+    }
+
+    @Override
+    public String toString() {
+        return "Articol{" +
+                "id=" + id +
+                ", titlu='" + titlu + '\'' +
+                ", autor='" + autor + '\'' +
+                ", anPublicare=" + anPublicare +
+                ", esteDisponibilaPentruImprumut=" + esteDisponibilaPentruImprumut +
+                ", idSectiune=" + idSectiune +
+                '}';
     }
 }
