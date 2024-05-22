@@ -51,7 +51,7 @@ public class Main {
                     String author = scanner.nextLine();
                     System.out.print("Enter book year: ");
                     int year = scanner.nextInt();
-                    carteDAO.adauga(title, author, year);
+//                    carteDAO.adauga(title, author, year);
                     System.out.println("Book added successfully.");
                     break;
                 default:

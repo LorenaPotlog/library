@@ -8,6 +8,9 @@ public class Articol {
     private Boolean esteDisponibilaPentruImprumut = true;
     private int idSectiune;
 
+    public Articol(int id, String titlu, String autor, int an, boolean esteDisponibilaPentruImprumut, int idSectiune) {
+    }
+
     public int getId() {
         return id;
     }
