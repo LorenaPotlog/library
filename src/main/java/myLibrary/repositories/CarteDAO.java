@@ -75,7 +75,7 @@ public class CarteDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Eroare la afisare " + id, e);
+            throw new RuntimeException("Eroare la afisare pentru" + id, e);
         }
 
         return null;
@@ -109,6 +109,18 @@ public class CarteDAO {
                 rs.getInt("idSectiune"),
                 rs.getInt("volum")
         );
+    }
+
+    public void actualizeazaDisponibilitatea(int idCarte, boolean disponibil) {
+        String sql = "UPDATE Carte SET esteDisponibilaPentruImprumut = ? WHERE id = ?";
+        try (Connection conn = Conexiune.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, disponibil);
+            stmt.setInt(2, idCarte);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Eroare la actualizare", e);
+        }
     }
 
 

@@ -8,6 +8,9 @@ public class Imprumut {
     private LocalDate dataImprumut;
     private int durataImprumutZile;
 
+    public Imprumut(int idArticol, int idCititor, LocalDate dataImprumut, int durataImprumutZile) {
+    }
+
     public int getIdArticol() {
         return idArticol;
     }
