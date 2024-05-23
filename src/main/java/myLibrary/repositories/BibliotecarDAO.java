@@ -22,27 +22,31 @@ public class BibliotecarDAO {
              PreparedStatement stmtBibliotecarSectiune = conn.prepareStatement(insertBibliotecarSectiuneSQL);
              PreparedStatement stmtAuth = conn.prepareStatement(insertAuthSQL)) {
 
-            // Start transaction
             conn.setAutoCommit(false);
 
-            // Insert into Bibliotecar table
             stmtBibliotecar.setString(1, nume);
             stmtBibliotecar.setString(2, prenume);
             stmtBibliotecar.executeUpdate();
 
-            // Get the generated id for the Bibliotecar
             try (var generatedKeys = stmtBibliotecar.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int bibliotecarId = generatedKeys.getInt(1);
 
-                    // Insert into BibliotecarSectiune table
                     for (int sectiuneId : idSectiuniGestionate) {
-                        stmtBibliotecarSectiune.setInt(1, bibliotecarId);
-                        stmtBibliotecarSectiune.setInt(2, sectiuneId);
-                        stmtBibliotecarSectiune.executeUpdate();
+                        String checkIfExistsSQL = "SELECT COUNT(*) FROM BibliotecarSectiune WHERE bibliotecar_id = ? AND sectiune_id = ?";
+                        try (PreparedStatement stmtCheck = conn.prepareStatement(checkIfExistsSQL)) {
+                            stmtCheck.setInt(1, bibliotecarId);
+                            stmtCheck.setInt(2, sectiuneId);
+                            try (ResultSet rs = stmtCheck.executeQuery()) {
+                                if (rs.next() && rs.getInt(1) == 0) { // If no record exists
+                                    stmtBibliotecarSectiune.setInt(1, bibliotecarId);
+                                    stmtBibliotecarSectiune.setInt(2, sectiuneId);
+                                    stmtBibliotecarSectiune.executeUpdate();
+                                }
+                            }
+                        }
                     }
 
-                    // Insert into auth table
                     stmtAuth.setString(1, username);
                     stmtAuth.setString(2, password);
                     stmtAuth.setInt(3, bibliotecarId);
@@ -52,7 +56,6 @@ public class BibliotecarDAO {
                 }
             }
 
-            // Commit transaction
             conn.commit();
         } catch (SQLException e) {
             throw new RuntimeException("Eroare la adaugare", e);

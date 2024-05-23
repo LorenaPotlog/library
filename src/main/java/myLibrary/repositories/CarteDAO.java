@@ -7,8 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class CarteDAO {
 
@@ -94,9 +93,9 @@ public class CarteDAO {
         return null;
     }
 
-    public SortedSet<Carte> afiseazaToate() {
+    public List<Carte> afiseazaToate() {
         String sql = "SELECT * FROM Carte";
-        SortedSet<Carte> carti = new TreeSet<>();
+        List<Carte> carti = new ArrayList<>();
 
         try (Connection conn = Conexiune.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -108,6 +107,8 @@ public class CarteDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Eroare la afisare " + e);
         }
+
+        Collections.sort(carti);
 
         return carti;
     }

@@ -12,27 +12,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import static myLibrary.helpers.helpers.*;
+
 
 public class Main {
     public static void main(String[] args) {
-        String sqlFilePath = "src/main/resources/create_tables.sql";
-        try (Connection conn = Conexiune.getConnection(); Statement stmt = conn.createStatement()) {
-
-            BufferedReader reader = new BufferedReader(new FileReader(sqlFilePath));
-            String line;
-            StringBuilder sql = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                sql.append(line);
-                if (line.trim().endsWith(";")) {
-                    System.out.println("Executing SQL: " + sql);
-                    stmt.execute(sql.toString());
-                    sql.setLength(0);
-                }
-            }
-            reader.close();
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
+        h2Initialization();
 
         Biblioteca biblioteca = new Biblioteca();
         Autentificare autentificare = new Autentificare();
@@ -241,10 +226,5 @@ public class Main {
             }
         }
         scanner.close();
-    }
-
-    private static boolean isValidSectionId(int idSectiune) {
-        Set<Integer> validSectionIds = new HashSet<>(Set.of(1, 2, 3, 4));
-        return validSectionIds.contains(idSectiune);
     }
 }

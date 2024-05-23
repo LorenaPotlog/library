@@ -45,7 +45,7 @@ public class Biblioteca {
         return carteDao.afiseaza(id);
     }
 
-    public SortedSet<Carte> afiseazaToateCartile() {
+    public List<Carte> afiseazaToateCartile() {
         logare("afiseazaToateCartile");
         return carteDao.afiseazaToate();
     }
