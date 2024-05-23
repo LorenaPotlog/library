@@ -47,21 +47,10 @@ public class Imprumut {
         this.durataImprumutZile = durataImprumutZile;
     }
 
-//    @Override
-//    public String toString() {
-//        String formatZile = durataImprumutZile > 1 ? "zile" : "zi";
-//        return String.format("Articolul cu id-ul %s a fost imprumutata de catre clientul cu id-ul %s, in data de %s, pentru perioada de %s %s." , idArticol,
-//                idCititor, dataImprumut, durataImprumutZile, formatZile);
-//    }
-
-
     @Override
     public String toString() {
-        return "Imprumut{" +
-                "idArticol=" + idArticol +
-                ", idCititor=" + idCititor +
-                ", dataImprumut=" + dataImprumut +
-                ", durataImprumutZile=" + durataImprumutZile +
-                '}';
+        String formatZile = durataImprumutZile > 1 ? "zile" : "zi";
+        return String.format("Articolul cu id-ul %s a fost imprumutata de catre clientul cu id-ul %s, in data de %s, pentru perioada de %s %s." , idArticol,
+                idCititor, dataImprumut, durataImprumutZile, formatZile);
     }
 }

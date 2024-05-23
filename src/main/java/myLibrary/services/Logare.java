@@ -16,12 +16,12 @@ public class Logare {
             String record = actiune + "," + getCurrentDateTime() + "\n";
             writer.write(record);
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Eroare: " + e.getMessage());
         }
     }
-        private static String getCurrentDateTime () {
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            return now.format(formatter);
-        }
+    private static String getCurrentDateTime () {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return now.format(formatter);
     }
+}

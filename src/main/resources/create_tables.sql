@@ -63,6 +63,23 @@ CREATE TABLE IF NOT EXISTS BibliotecarSectiune (
     PRIMARY KEY (bibliotecar_id, sectiune_id)
     );
 
+INSERT INTO BibliotecarSectiune (bibliotecar_id, sectiune_id) VALUES (1, 1);
+INSERT INTO BibliotecarSectiune (bibliotecar_id, sectiune_id) VALUES (1, 2);
+INSERT INTO BibliotecarSectiune (bibliotecar_id, sectiune_id) VALUES (1, 3);
+INSERT INTO BibliotecarSectiune (bibliotecar_id, sectiune_id) VALUES (2, 3);
+INSERT INTO BibliotecarSectiune (bibliotecar_id, sectiune_id) VALUES (2, 4);
+
+CREATE TABLE  if not EXISTS  auth(
+                                     id INT AUTO_INCREMENT PRIMARY KEY,
+                                     username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    idBibliotecar INT,
+    FOREIGN KEY (idBibliotecar) REFERENCES Bibliotecar(id)
+    );
+
+INSERT INTO auth (username, password, idBibliotecar) VALUES ('user1', 'password1', 1);
+INSERT INTO auth (username, password, idBibliotecar) VALUES ('user2', 'password2', 2);
+
 CREATE TABLE IF NOT EXISTS ImprumutCarte (
                                              id INT AUTO_INCREMENT PRIMARY KEY,
                                              idArticol INT,

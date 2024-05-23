@@ -15,4 +15,17 @@ public class AudioBook extends Articol{
     public void setDurata(int durata) {
         this.durata = durata;
     }
+
+    @Override
+    public String toString() {
+        return "AudioBook{" +
+                "id=" + getId() +
+                ", titlu='" + getTitlu() + '\'' +
+                ", autor='" + getAutor() + '\'' +
+                ", anPublicare=" + getAnPublicare() +
+                ", esteDisponibilaPentruImprumut=" + getEsteDisponibilaPentruImprumut() +
+                ", idSectiune=" + getIdSectiune() +
+                ", durata=" + durata +
+                '}';
+    }
 }

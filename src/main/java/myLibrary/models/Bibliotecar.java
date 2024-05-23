@@ -43,6 +43,7 @@ public class Bibliotecar {
     @Override
     public String toString() {
         return "Bibliotecar{" +
+                "id='" + id + '\'' +
                 "nume='" + nume + '\'' +
                 ", prenume='" + prenume + '\'' +
                 ", sectiuni gestionate=" + sectiuniGestionate +

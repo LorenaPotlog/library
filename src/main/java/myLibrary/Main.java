@@ -1,5 +1,7 @@
 package myLibrary;
 
+import myLibrary.models.Bibliotecar;
+import myLibrary.services.Autentificare;
 import myLibrary.services.Biblioteca;
 
 import java.io.BufferedReader;
@@ -8,7 +10,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -21,7 +24,7 @@ public class Main {
             while ((line = reader.readLine()) != null) {
                 sql.append(line);
                 if (line.trim().endsWith(";")) {
-                    System.out.println("Executing SQL: " + sql.toString());
+                    System.out.println("Executing SQL: " + sql);
                     stmt.execute(sql.toString());
                     sql.setLength(0);
                 }
@@ -32,6 +35,7 @@ public class Main {
         }
 
         Biblioteca biblioteca = new Biblioteca();
+        Autentificare autentificare = new Autentificare();
         Scanner scanner = new Scanner(System.in);
         boolean run = true;
 
@@ -55,6 +59,10 @@ public class Main {
             System.out.println("12. Returneaza audiobook");
             System.out.println("======================================");
             System.out.println("13. Afiseaza toate imprumurile (carti)");
+            System.out.println("======================================");
+            System.out.println("14. Adauga bibliotecar");
+            System.out.println("15. Afiseaza bibliotecari");
+            System.out.println("16. Autentificare bibliotecari");
             System.out.println("0.  Exit");
             System.out.println("======================================");
             System.out.print("Choose an option: ");
@@ -63,22 +71,29 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter book title: ");
+                    System.out.print("Introduceti titlul: ");
                     String title = scanner.nextLine();
-                    System.out.print("Enter book author: ");
+                    System.out.print("Introduceti autorul: ");
                     String author = scanner.nextLine();
-                    System.out.print("Enter book year: ");
+                    System.out.print("Introduceti anul: ");
                     int year = scanner.nextInt();
-                    System.out.println("Sections: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
-                    System.out.print("Enter section ID: ");
+                    System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                    System.out.print("Introduceti numarul sectiunii: ");
                     int idSectiune = scanner.nextInt();
-                    System.out.print("Enter volume: ");
+                    while (!isValidSectionId(idSectiune)) {
+                        System.out.println("Nu ati introdus o sectiune valida.");
+
+                        System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                        System.out.print("Introduceti numarul sectiunii: ");
+                        idSectiune = scanner.nextInt();
+                    }
+                    System.out.print("Introduceti volumul: ");
                     int volum = scanner.nextInt();
                     biblioteca.adaugaCarte(title, author, year, idSectiune, volum);
-                    System.out.println("Book added successfully.");
+                    System.out.println("Cartea a fost adaugata cu succes.");
                     break;
                 case 2:
-                    System.out.print("Enter book ID: ");
+                    System.out.print("Introduceti ID-ul: ");
                     int idCarte = scanner.nextInt();
                     System.out.println(biblioteca.afiseazaCarte(idCarte));
                     break;
@@ -86,97 +101,150 @@ public class Main {
                     biblioteca.afiseazaToateCartile().forEach(System.out::println);
                     break;
                 case 4:
-                    System.out.print("Enter book ID: ");
+                    System.out.print("Introduceti ID-ul: ");
                     idCarte = scanner.nextInt();
                     scanner.nextLine();
-                    System.out.print("Enter new book title: ");
+                    System.out.print("Introduceti noul titlu: ");
                     title = scanner.nextLine();
-                    System.out.print("Enter new book author: ");
+                    System.out.print("Introduceti noul autor: ");
                     author = scanner.nextLine();
                     biblioteca.modificaCarte(idCarte, title, author);
-                    System.out.println("Book updated successfully.");
+                    System.out.println("Cartea a fost actualizata cu succes.");
                     break;
                 case 5:
-                    System.out.print("Enter book ID: ");
+                    System.out.print("Introduceti ID-ul: ");
                     idCarte = scanner.nextInt();
                     biblioteca.stergeCarte(idCarte);
-                    System.out.println("Book deleted successfully.");
+                    System.out.println("Cartea a fost ștearsă cu succes.");
                     break;
                 case 6:
-                    System.out.print("Enter book ID: ");
+                    System.out.print("Introduceti ID-ul cartii: ");
                     idCarte = scanner.nextInt();
-                    System.out.print("Enter reader ID: ");
+                    System.out.print("Introduceti ID-ul cititorului: ");
                     int idCititor = scanner.nextInt();
-                    System.out.print("Enter loan duration in days: ");
+                    System.out.print("Introduceti durata imprumutului in zile: ");
                     int durataImprumutZile = scanner.nextInt();
                     try {
                         biblioteca.imprumutaCarte(idCarte, idCititor, durataImprumutZile);
-                        System.out.println("Book loaned successfully.");
+                        System.out.println("Cartea a fost imprumutata cu succes.");
                     } catch (RuntimeException e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println("Eroare: " + e.getMessage());
                     }
                     break;
                 case 7:
-                    System.out.print("Enter loan ID: ");
+                    System.out.print("Introduceti ID-ul: ");
                     int idImprumut = scanner.nextInt();
                     biblioteca.returneazaCarte(idImprumut);
-                    System.out.println("Book returned successfully.");
+                    System.out.println("Cartea a fost returnata cu succes.");
                     break;
                 case 8:
-                    System.out.print("Enter audiobook title: ");
+                    System.out.print("Introduceti titlul: ");
                     title = scanner.nextLine();
-                    System.out.print("Enter audiobook author: ");
+                    System.out.print("Introduceti autorul: ");
                     author = scanner.nextLine();
-                    System.out.print("Enter audiobook year: ");
+                    System.out.print("Introduceti anul: ");
                     year = scanner.nextInt();
-                    System.out.println("Sections: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
-                    System.out.print("Enter section ID: ");
+                    System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                    System.out.print("Introduceti numarul sectiunii: ");
                     idSectiune = scanner.nextInt();
-                    System.out.print("Enter duration: ");
+                    while (!isValidSectionId(idSectiune)) {
+                        System.out.println("Nu ati introdus o sectiune valida.");
+
+                        System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                        System.out.print("Introduceti numarul sectiunii: ");
+                        idSectiune = scanner.nextInt();
+                    }
+                    System.out.print("Introduceti durata: ");
                     int durata = scanner.nextInt();
                     biblioteca.adaugaAudioBook(title, author, year, idSectiune, durata);
-                    System.out.println("Audiobook added successfully.");
+                    System.out.println("Audiobook-ul a fost adaugat cu succes.");
                     break;
                 case 9:
                     biblioteca.afiseazaToateAudioBooks().forEach(System.out::println);
                     break;
                 case 10:
-                    System.out.print("Enter audiobook ID: ");
+                    System.out.print("Introduceti ID-ul: ");
                     int idAudioBook = scanner.nextInt();
                     biblioteca.stergeAudioBook(idAudioBook);
-                    System.out.println("Audiobook deleted successfully.");
+                    System.out.println("Audiobook-ul a fost sters cu succes.");
                     break;
                 case 11:
-                    System.out.print("Enter audiobook ID: ");
+                    System.out.print("Introduceti ID-ul audiobook-ului: ");
                     idAudioBook = scanner.nextInt();
-                    System.out.print("Enter reader ID: ");
+                    System.out.print("Introduceti ID-ul cititorului: ");
                     idCititor = scanner.nextInt();
-                    System.out.print("Enter loan duration in days: ");
+                    System.out.print("Introduceti durata imprumutului în zile: ");
                     durataImprumutZile = scanner.nextInt();
                     try {
                         biblioteca.imprumutaAudioBook(idAudioBook, idCititor, durataImprumutZile);
-                        System.out.println("Audiobook loaned successfully.");
+                        System.out.println("Audiobook-ul a fost imprumutat cu succes.");
                     } catch (RuntimeException e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println("Eroare: " + e.getMessage());
                     }
                     break;
                 case 12:
-                    System.out.print("Enter loan ID: ");
+                    System.out.print("Introduceti ID-ul imprumutului: ");
                     idImprumut = scanner.nextInt();
                     biblioteca.returneazaAudioBook(idImprumut);
-                    System.out.println("Audiobook returned successfully.");
+                    System.out.println("Audiobook-ul a fost returnat cu succes.");
                     break;
                 case 13:
                     biblioteca.afiseazaImprumuturiCarti().forEach(System.out::println);
+                    break;
+                case 14:
+                    System.out.print("Introduceti prenumele: ");
+                    String nume = scanner.nextLine();
+                    System.out.print("Introduceti numele: ");
+                    String prenume = scanner.nextLine();
+                    List<Integer> sectiuni = new ArrayList<>();
+                    System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                    while (true) {
+                        System.out.print("Introduceti numarul sectiunii pentru gestionare (sau 0 pentru a termina): ");
+                        idSectiune = scanner.nextInt();
+                        if (idSectiune == 0) break;
+                        while (!isValidSectionId(idSectiune)) {
+                            System.out.println("Nu ati introdus o sectiune valida.");
+                            System.out.println("Sectiuni: 1-Romantic, 2-Horror, 3-Comedie, 4-Documentar");
+                            System.out.print("Introduceti ID-ul sectiunii pentru gestionare (sau 0 pentru a termina): ");
+                            idSectiune = scanner.nextInt();
+                            if (idSectiune == 0) break;
+                        }
+                        sectiuni.add(idSectiune);
+                    }
+                    scanner.nextLine();
+                    System.out.print("Introduceti username-ul: ");
+                    String username = scanner.nextLine();
+                    System.out.print("Introduceti parola: ");
+                    String password = scanner.nextLine();
+                    biblioteca.adaugaBibliotecar(nume, prenume, sectiuni, username, password);
+                    System.out.println("Bibliotecarul a fost adaugat cu succes.");
+                    break;
+                case 15:
+                    List<Bibliotecar> bibliotecari = biblioteca.afiseazaBibliotecari();
+                    for (Bibliotecar bibliotecar : bibliotecari) {
+                        System.out.println(bibliotecar);
+                    }
+                    break;
+                case 16:
+                    System.out.print("Username: ");
+                    username = scanner.nextLine();
+                    System.out.print("Parola: ");
+                    password = scanner.nextLine();
+                    autentificare.autentificare(username, password);
                     break;
                 case 0:
                     run = false;
                     break;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Optiune invalida.");
                     break;
             }
         }
         scanner.close();
+    }
+
+    private static boolean isValidSectionId(int idSectiune) {
+        Set<Integer> validSectionIds = new HashSet<>(Set.of(1, 2, 3, 4));
+        return validSectionIds.contains(idSectiune);
     }
 }

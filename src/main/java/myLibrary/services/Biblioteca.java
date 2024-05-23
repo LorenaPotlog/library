@@ -1,8 +1,10 @@
 package myLibrary.services;
 
 import myLibrary.models.AudioBook;
+import myLibrary.models.Bibliotecar;
 import myLibrary.models.Carte;
 import myLibrary.models.Imprumut;
+import myLibrary.repositories.BibliotecarDAO;
 import myLibrary.repositories.CarteDAO;
 import myLibrary.repositories.AudioBookDAO;
 import myLibrary.repositories.ImprumutDAO;
@@ -20,10 +22,11 @@ public class Biblioteca {
     private ImprumutDAO imprumutDao;
     private AudioBookDAO audioBookDao;
     private CarteDAO carteDao;
-    private static final Set<Integer> validSectionIds = new HashSet<>(Set.of(1, 2, 3, 4));
+    private BibliotecarDAO bibliotecarDao;
 
 
     public Biblioteca() {
+        this.bibliotecarDao = new BibliotecarDAO();
         this.imprumutDao = new ImprumutDAO();
         this.audioBookDao = new AudioBookDAO();
         this.carteDao = new CarteDAO();
@@ -31,9 +34,6 @@ public class Biblioteca {
 
     public void adaugaCarte(String titlu, String autor, int an, int idSectiune, int volum) {
         logare("adaugaCarte");
-        if (!isValidSectionId(idSectiune)) {
-            throw new IllegalArgumentException("Invalid section ID. Valid IDs are: 1, 2, 3, 4.");
-        }
         carteDao.adauga(titlu, autor, an, idSectiune, volum);
     }
 
@@ -88,16 +88,12 @@ public class Biblioteca {
         Imprumut imprumut = imprumutDao.afiseaza(idImprumut, "ImprumutCarte");
         int idCarte = imprumut.getIdArticol();
         carteDao.actualizeazaDisponibilitatea(idCarte, true);
-        }
+    }
 
 //    AudioBook
 
-
     public void adaugaAudioBook(String titlu, String autor, int an, int idSectiune, int durata) {
         logare("adaugaAudioBook");
-        if (!isValidSectionId(idSectiune)) {
-            throw new IllegalArgumentException("Invalid section ID. Valid IDs are: 1, 2, 3, 4.");
-        }
         audioBookDao.adauga(titlu, autor, an, idSectiune, durata);
     }
 
@@ -142,9 +138,18 @@ public class Biblioteca {
         audioBookDao.actualizeazaDisponibilitatea(idAudioBook, true);
     }
 
-    private boolean isValidSectionId(int idSectiune) {
-        return validSectionIds.contains(idSectiune);
+    //Bibliotecar
+
+    public void adaugaBibliotecar(String nume, String prenume, List<Integer> sectiuni,String username, String password) {
+        logare("adaugaBibliotecar");
+        bibliotecarDao.adauga(nume, prenume, sectiuni,username,password);
     }
+
+    public List<Bibliotecar> afiseazaBibliotecari() {
+        logare("afiseazaBibliotecari");
+        return bibliotecarDao.afiseazaToti();
+    }
+
 
     public List<Imprumut> afiseazaImprumuturiCarti() {
         logare("afiseazaImprumuturiCarti");
