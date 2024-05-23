@@ -40,7 +40,7 @@ public class Main {
         boolean run = true;
 
         while (run) {
-            System.out.println("\nLibrary Management System");
+            System.out.println("\nBiblioteca");
             System.out.println("======================================");
             System.out.println("1.  Adauga carte");
             System.out.println("2.  Afiseaza carte");
@@ -65,7 +65,7 @@ public class Main {
             System.out.println("16. Autentificare bibliotecari");
             System.out.println("0.  Exit");
             System.out.println("======================================");
-            System.out.print("Choose an option: ");
+            System.out.print("Alegeti o optiune: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
