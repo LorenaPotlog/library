@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import myLibrary.Conexiune;
+import myLibrary.helpers.Conexiune;
 import myLibrary.models.Imprumut;
 
 

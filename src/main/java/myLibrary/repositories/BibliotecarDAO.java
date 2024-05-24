@@ -1,6 +1,6 @@
 package myLibrary.repositories;
 
-import myLibrary.Conexiune;
+import myLibrary.helpers.Conexiune;
 import myLibrary.models.Bibliotecar;
 import myLibrary.models.Gen;
 import myLibrary.models.Sectiune;
@@ -71,7 +71,7 @@ public class BibliotecarDAO {
                 "ORDER BY b.id";
 
         try (Connection conn = Conexiune.getConnection();
-             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+             Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             int currentBibliotecarId = -1;
@@ -150,25 +150,26 @@ public class BibliotecarDAO {
         }
     }
 
-    public Integer autentificare(String username, String password) {
-        String sql = "SELECT idBibliotecar FROM auth WHERE username = ? AND password = ?";
+    public boolean autentificare(int idBibliotecar, String username, String password) {
+        String sql = "SELECT COUNT(*) FROM auth WHERE username = ? AND password = ? AND idBibliotecar = ?";
 
         try (Connection conn = Conexiune.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
+            stmt.setInt(3, idBibliotecar);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("idBibliotecar");
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Eroare", e);
         }
 
-        return null;
+        return false;
     }
 
 }

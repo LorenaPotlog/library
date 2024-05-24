@@ -1,6 +1,6 @@
 package myLibrary.repositories;
 
-import myLibrary.Conexiune;
+import myLibrary.helpers.Conexiune;
 import myLibrary.models.AudioBook;
 
 import java.sql.Connection;

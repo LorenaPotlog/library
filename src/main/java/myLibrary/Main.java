@@ -211,11 +211,14 @@ public class Main {
                     }
                     break;
                 case 16:
+                    System.out.print("Id user: ");
+                    int idBibliotcar = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Username: ");
                     username = scanner.nextLine();
                     System.out.print("Parola: ");
                     password = scanner.nextLine();
-                    autentificare.autentificare(username, password);
+                    autentificare.autentificare(idBibliotcar, username, password);
                     break;
                 case 0:
                     run = false;

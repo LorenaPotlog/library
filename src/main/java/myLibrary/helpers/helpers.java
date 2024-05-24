@@ -1,7 +1,5 @@
 package myLibrary.helpers;
 
-import myLibrary.Conexiune;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,7 +13,7 @@ public class helpers {
 
     public static void h2Initialization() {
         String sqlFilePath1 = "src/main/resources/create_tables.sql";
-        String sqlFilePath2 = "src/main/resources/insert_test.sql"; // Path to your second SQL file
+        String sqlFilePath2 = "src/main/resources/insert_test.sql";
         try (Connection conn = Conexiune.getConnection(); Statement stmt = conn.createStatement()) {
 
             executeSqlFile(sqlFilePath1, stmt);

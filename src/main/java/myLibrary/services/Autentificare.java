@@ -9,16 +9,16 @@ public class Autentificare {
 
     private final BibliotecarDAO bibliotecarDao = new BibliotecarDAO();
 
-    public void autentificare(String username, String password) {
+    public void autentificare(int idBibliotecar, String username, String password) {
         logare("autentificare");
-        Integer bibliotecarId = bibliotecarDao.autentificare(username, password);
-        if (bibliotecarId != null) {
-            Bibliotecar bibliotecar = bibliotecarDao.afiseaza(bibliotecarId);
+        boolean isAuthenticated = bibliotecarDao.autentificare(idBibliotecar, username, password);
+        if (isAuthenticated) {
+            Bibliotecar bibliotecar = bibliotecarDao.afiseaza(idBibliotecar);
             if (bibliotecar != null) {
-                System.out.println("Urmatorul bibliotecare a fost autentificat:");
+                System.out.println("Urmatorul bibliotecar a fost autentificat:");
                 System.out.println(bibliotecar);
             } else {
-                System.out.println("Bibliotecar cu id-ul " + bibliotecarId + " nu a fost gasit.");
+                System.out.println("Bibliotecar cu id-ul " + idBibliotecar + " nu a fost gasit.");
             }
         } else {
             System.out.println("Invalid username sau parola.");
